@@ -18,21 +18,25 @@ for ($i=0; $i<count($vPeopleArray); $i++) {
 // http://en-gb.smashrun.com/cranie/list/2017
 // runs.report.showRun  get these lines then join pairs this will give date and a value km run
 
-$fp = fopen("http://en-gb.smashrun.com/" . $vPeopleArray[$i] . "/list/2017", "rb");
-if (FALSE === $fp) {
-    exit("Failed to open stream to URL");
-}
 
+// Fix for the month BUG
+$vCurrentMonth = date("m");
 $vResultList = '';
 
-while (!feof($fp)) {
-    $vResultList .= fread($fp, 8192);
+for ($x = 1; $x <= $vCurrentMonth; $x++) {
+	$fp = fopen("http://en-gb.smashrun.com/" . $vPeopleArray[$i] . "/list/2017/" . $x, "rb");
+	if (FALSE === $fp) {
+		exit("Failed to open stream to URL");
+	}
+	while (!feof($fp)) {
+		$vResultList .= fread($fp, 8192);
+	}
+	fclose($fp);
 }
-fclose($fp);
+
 
 preg_match_all('/runs.report.showRun.*/',$vResultList, $vMatchList) ;
 
-//print_r($vMatchList) ;
 ${$vPeopleArray[$i]} = array() ;
 
 for ($x=0; $x<count($vMatchList[0]); $x+=7) {
@@ -55,10 +59,8 @@ for ($x=0; $x<count($vMatchList[0]); $x+=7) {
     } 
 
     if (empty(${$vPeopleArray[$i]}[$vDate])) {
-        //${$vPeopleArray[$i]}[$vDate] = $vDistance;
         ${$vPeopleArray[$i]}[$vDate] = array($vDistance, $vDuration);
     } else {
-        //${$vPeopleArray[$i]}[$vDate] = ${$vPeopleArray[$i]}[$vDate] + $vDistance ;
         $vAddedTime = strtotime(${$vPeopleArray[$i]}[$vDate][1]) + strtotime($vDuration) ;
         $vAddedTime = date("H:i:s",($vAddedTime));
 
@@ -68,62 +70,10 @@ for ($x=0; $x<count($vMatchList[0]); $x+=7) {
   
 }
 
-//print_r(${$vPeopleArray[$i]});
-
-//exit() ;
-
 /// -------------------------
 
-$fp = fopen("http://en-gb.smashrun.com/" . $vPeopleArray[$i] . "/overview/2017", "rb");
-if (FALSE === $fp) {
-    exit("Failed to open stream to URL");
 }
 
-$result = '';
-
-while (!feof($fp)) {
-    $result .= fread($fp, 8192);
-}
-fclose($fp);
-
-preg_match('/reportConfig.goals.*/', $result, $matches, PREG_OFFSET_CAPTURE);
-
-//reportConfig.goals = [{"userId":0,"distance":17,"title":"Goal for 2017","daysInPeriod":365,"id":0,"year":2017,"month":null,"goalText":"","goalKilometers":1609.344,"dateUpdatedUTC":new Date(-62135578800000),"isDeleted":false}];
-
-$vOutput = preg_replace('/.*\[/', '', $matches[0][0]);
-$vOutput = preg_replace('/\].*/', '', $vOutput);
-$vOutput = preg_replace('/,"dateUpdatedUTC.*/', '}', $vOutput);
-
-
-//{"userId":0,"distance":17,"title":"Goal for 2017","daysInPeriod":365,"id":0,"year":2017,"month":null,"goalText":"","goalKilometers":1609.344,"dateUpdatedUTC":new Date(-62135578800000),"isDeleted":false}
-
-$vOutputArray = (json_decode($vOutput, true));
-/*
-echo "Processing for: " . $vPeopleArray[$i]  ;
-echo "<p>" ;
-echo $vOutputArray['distance']  . "miles";
-echo "<p>" ;
-//echo $vOutputArray['goalKilometers'] . "km" ;
-echo "1000 miles" ;
-echo "<p>" ;
-*/
-
-}
-
-// 2.74 miles per day
-
-// loop through 0 - today
-// get all values for people into format:
-// day, name, name, name, target
-// use: to fill in blanks
-
-/*
-if (empty(${$vPeopleArray[$i]}[$vDate])) {
-        ${$vPeopleArray[$i]}[$vDate] = $vDistance;
-    } else {
-        ${$vPeopleArray[$i]}[$vDate] = ${$vPeopleArray[$i]}[$vDate] + $vDistance ;
-    }
-*/
 //'alexarblaster','cranie','ste.doherty'
 
 $vGoogleOutput = "[['Day', 'Al', 'Cranie', 'Doherty', 'Target']," ;
@@ -137,10 +87,6 @@ $vSte = 0 ;
 $vSte_d = 0 ;
 $vTarget = 2.74 ;
 
-
-// need to proper add time here!!!!
-//$vAddedTime = strtotime(${$vPeopleArray[$i]}[$vDate][1]) + strtotime($vDuration) ;
-//$vAddedTime = date("H:i:s",($vAddedTime));
 function vGetMinutes($str_time) {
     sscanf($str_time, "%d:%d:%d", $hours, $minutes, $seconds);
     $time_seconds = (isset($seconds) ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes) / 60 / 60;
@@ -172,10 +118,6 @@ for ($i=0; $i<date('z') + 1; $i++) {
     }
     $vDay = $i + 1 ;
     $vGoogleOutput .= "['$vDay', $vAl, $vCranie, $vSte, $vTarget ]," ;
-// duration output
-
-
-
     $vGoogleOutput_d .= "['$vDay', $vAl_d, $vCranie_d,$vSte_d] ," ;
 
     $vTarget += 2.74 ; 
@@ -183,9 +125,6 @@ for ($i=0; $i<date('z') + 1; $i++) {
 
 $vGoogleOutput .= "]" ;
 $vGoogleOutput_d .= "]" ;
-
-//echo $vGoogleOutput_d ; 
-//print_r(array_keys(get_defined_vars()));
 
 ?>
 
