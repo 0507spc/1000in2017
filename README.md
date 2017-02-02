@@ -2,5 +2,5 @@
 PHP to pull from Smashrun and graph distance and duration for 3 runners
 
 #TODO:
- - Fix code for month
- - Use API
+ - [x] Fix code for month
+ - [ ] Use API - OAUTH2 compelte
