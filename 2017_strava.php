@@ -1,13 +1,11 @@
 <?php
 
-$vPath = './token_store/' ; // This should be database
+$vPath = './token_store/' ;
 $vTarget = 2.74 ;
-//$vGoogleOutput = "[['Day', 'Al', 'Cranie', 'Doherty', 'Target']," ;
-//$vGoogleOutput_d = "[['Day', 'Al', 'Cranie', 'Doherty']," ;
-//$vGoogleOutput_e = "[['Day', 'Al', 'Cranie', 'Doherty']," ;
-$vGoogleOutput = "[['Day', 'Cranie', 'Doherty', 'Target']," ;
-$vGoogleOutput_d = "[['Day', 'Cranie', 'Doherty']," ;
-$vGoogleOutput_e = "[['Day', 'Cranie', 'Doherty']," ;
+$vGoogleOutput = "[['Day', 'Al', 'Cranie', 'Doherty', 'Target']," ;
+$vGoogleOutput_d = "[['Day', 'Al', 'Cranie', 'Doherty']," ;
+$vGoogleOutput_e = "[['Day', 'Al', 'Cranie', 'Doherty']," ;
+
 
 function fGetAPI($url, $post) {
     $vPostData = http_build_query($post);
@@ -40,9 +38,9 @@ foreach ($files as $file) {
     foreach ($vOutput as $vActivity) {
         $vDate      = date( "Y-m-d", strtotime($vActivity['start_date_local'])) ;                  // time string
         $vDate      = date("z", strtotime($vActivity['start_date_local'])) ;     // Day of year of run
-        ${$vUserName[$vDayOfRun]} = array() ; 
+        ${$vUserName[$vDate]} = array() ; 
         $vDistance  = $vActivity['distance'] / 1609.34 ;                          // meters converted to miles
-        $vDuration  = gmdate("H:i:s",$vActivity['elapsed_time']) ;      // seconds
+        $vDuration  = gmdate("H:i:s",$vActivity['moving_time']) ;      // seconds moving_time or elapsed_time
         $vElevation = $vActivity['total_elevation_gain'] ;              // meters
 
 		if (empty(${$vUserName}[$vDate])) {
@@ -78,16 +76,16 @@ function vGetMinutes($str_time) {
 // Need to code in foreach ($files as $file) {
 // to parse users whoever is added and not a defined list
 for ($i=0; $i<date('z') + 1; $i++) {
-/*    if (empty($alexarblaster[$i])) {
+    if (empty($aarblaster[$i])) {
         $vAl = $vAl ;
         $vAl_d = $vAl_d ;
         $vAl_e = $vAl_e ;
     } else {
-        $vAl += $alexarblaster[$i][0]  ;
-        $vAl_d += vGetMinutes($alexarblaster[$i][1])  ;
-        $vAl_e += $alexarblaster[$i][2]  ;
+        $vAl += $aarblaster[$i][0]  ;
+        $vAl_d += vGetMinutes($aarblaster[$i][1])  ;
+        $vAl_e += $aarblaster[$i][2]  ;
     }
-*/
+
     if (empty($cranie[$i])) {
         $vCranie = $vCranie ;
         $vCranie_d = $vCranie_d ;
@@ -110,12 +108,9 @@ for ($i=0; $i<date('z') + 1; $i++) {
     
     $vDayMonth = date("M-j", strtotime("January 1st +".($vDay)." days") );
     
-    //$vGoogleOutput .= "['$vDayMonth', $vAl, $vCranie, $vSte, $vTarget ]," ;
-    //$vGoogleOutput_d .= "['$vDayMonth', $vAl_d, $vCranie_d,$vSte_d] ," ;
-    //$vGoogleOutput_d .= "['$vDayMonth', $vAl_e, $vCranie_e,$vSte_e] ," ;
-    $vGoogleOutput .= "['$vDayMonth', $vCranie, $vSte, $vTarget ]," ;
-    $vGoogleOutput_d .= "['$vDayMonth', $vCranie_d,$vSte_d] ," ;    
-    $vGoogleOutput_e .= "['$vDayMonth', $vCranie_e,$vSte_e] ," ;    
+    $vGoogleOutput .= "['$vDayMonth', $vAl, $vCranie, $vSte, $vTarget ]," ;
+    $vGoogleOutput_d .= "['$vDayMonth', $vAl_d, $vCranie_d,$vSte_d] ," ;
+    $vGoogleOutput_e .= "['$vDayMonth', $vAl_e, $vCranie_e,$vSte_e] ," ;   
     $vTarget += 2.74 ; 
 }
 
