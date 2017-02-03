@@ -107,12 +107,15 @@ for ($i=0; $i<date('z') + 1; $i++) {
         $vSte_e += $ste_doherty[$i][2]   ;
     }
     $vDay = $i + 1 ;
-    //$vGoogleOutput .= "['$vDay', $vAl, $vCranie, $vSte, $vTarget ]," ;
-    //$vGoogleOutput_d .= "['$vDay', $vAl_d, $vCranie_d,$vSte_d] ," ;
-    //$vGoogleOutput_d .= "['$vDay', $vAl_e, $vCranie_e,$vSte_e] ," ;
-    $vGoogleOutput .= "['$vDay', $vCranie, $vSte, $vTarget ]," ;
-    $vGoogleOutput_d .= "['$vDay', $vCranie_d,$vSte_d] ," ;    
-    $vGoogleOutput_e .= "['$vDay', $vCranie_e,$vSte_e] ," ;    
+    
+    $vDayMonth = date("M-j", strtotime("January 1st +".($vDay)." days") );
+    
+    //$vGoogleOutput .= "['$vDayMonth', $vAl, $vCranie, $vSte, $vTarget ]," ;
+    //$vGoogleOutput_d .= "['$vDayMonth', $vAl_d, $vCranie_d,$vSte_d] ," ;
+    //$vGoogleOutput_d .= "['$vDayMonth', $vAl_e, $vCranie_e,$vSte_e] ," ;
+    $vGoogleOutput .= "['$vDayMonth', $vCranie, $vSte, $vTarget ]," ;
+    $vGoogleOutput_d .= "['$vDayMonth', $vCranie_d,$vSte_d] ," ;    
+    $vGoogleOutput_e .= "['$vDayMonth', $vCranie_e,$vSte_e] ," ;    
     $vTarget += 2.74 ; 
 }
 
